@@ -1,12 +1,14 @@
 import { ListProductsUseCase } from "@/@core/application/product/list-products.use-case";
+import { container, Registry } from "@/@core/infra/container-registry";
 import { ProductHttpGateway } from "@/@core/infra/gateways/product-http.gateway";
-import { http } from "@/utils/http";
+import { http } from "@/@core/infra/http";
 import { NextPage } from "next";
 import Link from "next/link";
 
 const Home: NextPage = async () => {
-  const gateway = new ProductHttpGateway(http);
-  const useCase = new ListProductsUseCase(gateway);
+  const useCase = container.get<ListProductsUseCase>(
+    Registry.ListProductsUseCase
+  );
   const products = await useCase.execute();
 
   return (

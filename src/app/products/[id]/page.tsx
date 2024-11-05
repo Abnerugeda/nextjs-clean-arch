@@ -1,5 +1,5 @@
 import { ProductDetail } from "./components/ProductDetail";
-import { container, Registry } from "@/@core/infra/container-registry";
+import { container, Registry } from "@/@core/infra/registry/container-registry";
 import { GetProductUseCase } from "@/@core/application/product/get-product.use-case";
 import { ProductEntity } from "@/@core/domain/entities/product.entity";
 

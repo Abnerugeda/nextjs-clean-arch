@@ -1,5 +1,5 @@
 import { ListProductsUseCase } from "@/@core/application/product/list-products.use-case";
-import { container, Registry } from "@/@core/infra/container-registry";
+import { container, Registry } from "@/@core/infra/registry/container-registry";
 import { NextPage } from "next";
 import Link from "next/link";
 

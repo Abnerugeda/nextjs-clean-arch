@@ -1,7 +1,5 @@
 import { ListProductsUseCase } from "@/@core/application/product/list-products.use-case";
 import { container, Registry } from "@/@core/infra/container-registry";
-import { ProductHttpGateway } from "@/@core/infra/gateways/product-http.gateway";
-import { http } from "@/@core/infra/http";
 import { NextPage } from "next";
 import Link from "next/link";
 
@@ -16,7 +14,7 @@ const Home: NextPage = async () => {
       <h1>Ecommerce Clean Arch</h1>
       <ul>
         {products.map((product, key) => {
-          return (
+          return (    
             <li key={key}>
               <label>
                 {product.name} |{" "}

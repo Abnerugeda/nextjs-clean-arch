@@ -1,9 +1,9 @@
 "use client";
+import { ProductEntity } from "@/@core/domain/entities/product.entity";
 import { CartContext } from "@/context/cart.provider";
-import { Products } from "@/utils/models";
 import { useContext } from "react";
 
-export const ProductDetail = ({ product }: { product: Products }) => {
+export const ProductDetail = ({ product }: { product: ProductEntity }) => {
   const cartContext = useContext(CartContext);
 
   const handleAddToCart = () => {

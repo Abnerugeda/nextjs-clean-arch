@@ -1,5 +1,5 @@
 "use client";
-import { Products } from "@/utils/models";
+import { ProductEntity } from "@/@core/domain/entities/product.entity";
 import {
   createContext,
   PropsWithChildren,
@@ -10,9 +10,9 @@ import {
 } from "react";
 
 export type CartContextType = {
-  products: Products[];
-  addProduct: (product: Products) => void;
-  removeProduct: (product: Products) => void;
+  products: ProductEntity[];
+  addProduct: (product: ProductEntity) => void;
+  removeProduct: (product: ProductEntity) => void;
   clear: () => void;
   total: number;
 };
@@ -28,7 +28,7 @@ const defaultContext: CartContextType = {
 export const CartContext = createContext(defaultContext);
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const [products, setProducts] = useState<Products[] | null>(null);
+  const [products, setProducts] = useState<ProductEntity[] | null>(null);
 
   useEffect(() => {
     setProducts(JSON.parse(localStorage.getItem("products") || "[]"));
@@ -40,11 +40,11 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     localStorage.setItem("products", JSON.stringify(products));
   }, [products]);
 
-  const addProduct = useCallback((product: Products) => {
+  const addProduct = useCallback((product: ProductEntity) => {
     setProducts((products) => [...products!, product]);
   }, []);
 
-  const removeProduct = useCallback((product: Products) => {
+  const removeProduct = useCallback((product: ProductEntity) => {
     setProducts((products) => products!.filter((p) => p.id !== product.id));
   }, []);
 

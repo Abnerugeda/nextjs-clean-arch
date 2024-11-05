@@ -1,8 +1,10 @@
-import { Products } from "@/utils/models";
 import { ProductDetail } from "./components/ProductDetail";
+import { container, Registry } from "@/@core/infra/container-registry";
+import { GetProductUseCase } from "@/@core/application/product/get-product.use-case";
+import { ProductEntity } from "@/@core/domain/entities/product.entity";
 
 interface Params {
-  id: string;
+  id: number;
 }
 
 interface PageProps {
@@ -11,13 +13,9 @@ interface PageProps {
 
 const ProductPage = async ({ params }: PageProps) => {
   const { id } = await params;
+  const useCase = container.get<GetProductUseCase>(Registry.GetProductUseCase);
 
-  const product: Products = await fetch(
-    `http://localhost:8000/products/${id}`,
-    {
-      cache: "no-store",
-    }
-  ).then((res) => res.json());
+  const product: ProductEntity = await useCase.execute(id);
 
   return <ProductDetail product={product} />;
 };

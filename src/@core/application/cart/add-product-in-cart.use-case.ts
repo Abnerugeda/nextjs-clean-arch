@@ -8,5 +8,7 @@ export class AddProductInCartUseCase{
         const cart = this.cartGateway.get();
         cart.addProduct(product);
         this.cartGateway.save(cart);
+
+        return cart;
     }
 }

@@ -1,70 +1,63 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+import { AddProductInCartUseCase } from "@/@core/application/cart/add-product-in-cart.use-case";
+import { ClearCartUseCase } from "@/@core/application/cart/clear-product-in-cart.use-case";
+import { RemoveProductInCartUseCase } from "@/@core/application/cart/remove-product-in-cart.use-case";
+import { CartEntity } from "@/@core/domain/entities/cart.entity";
 import { ProductEntity } from "@/@core/domain/entities/product.entity";
+import { container, Registry } from "@/@core/infra/registry/container-registry";
 import {
   createContext,
   PropsWithChildren,
   useCallback,
-  useEffect,
-  useMemo,
   useState,
 } from "react";
 
 export type CartContextType = {
-  products: ProductEntity[];
+  cart: CartEntity;
   addProduct: (product: ProductEntity) => void;
-  removeProduct: (product: ProductEntity) => void;
+  removeProduct: (product: number) => void;
   clear: () => void;
-  total: number;
 };
 
 const defaultContext: CartContextType = {
-  addProduct: () => {},
-  removeProduct: () => {},
+  addProduct: (product: ProductEntity) => {},
+  removeProduct: (productId: number) => {},
   clear: () => {},
-  products: [],
-  total: 0,
+  cart: new CartEntity({products: []}),
 };
 
 export const CartContext = createContext(defaultContext);
 
+const addProductUseCase = container.get<AddProductInCartUseCase>(Registry.AddProductInCartUseCase);
+const removeProductUseCase = container.get<RemoveProductInCartUseCase>(Registry.RemoveProductInCartUseCase);
+const clearProductUseCase = container.get<ClearCartUseCase>(Registry.ClearCartUseCase);
+
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const [products, setProducts] = useState<ProductEntity[] | null>(null);
+  const [cart, setCart] = useState<CartEntity>(defaultContext.cart);
 
-  useEffect(() => {
-    setProducts(JSON.parse(localStorage.getItem("products") || "[]"));
+  const  addProduct = useCallback( async (product: ProductEntity) => {
+    const cart = await addProductUseCase.execute(product);
+    setCart(cart);
   }, []);
 
-  useEffect(() => {
-    if (!products) return;
-    
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
-
-  const addProduct = useCallback((product: ProductEntity) => {
-    setProducts((products) => [...products!, product]);
-  }, []);
-
-  const removeProduct = useCallback((product: ProductEntity) => {
-    setProducts((products) => products!.filter((p) => p.id !== product.id));
+  const removeProduct = useCallback((productId: number) => {
+    const cart = removeProductUseCase.execute(productId);
+    setCart(cart);
   }, []);
 
   const clear = useCallback(() => {
-    setProducts([]);
+    const cart = clearProductUseCase.execute();
+    setCart(cart);
   }, []);
-
-  const total = useMemo(
-    () => products?.reduce((acc, product) => acc + product.price, 0),
-    [products]
-  );
 
   return (
     <CartContext.Provider
       value={{
-        products: products || [],
+        cart,
         addProduct,
         removeProduct,
         clear,
-        total: total || 0,
       }}
     >
       {children}

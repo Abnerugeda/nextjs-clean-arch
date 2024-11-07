@@ -17,6 +17,6 @@ const ProductPage = async ({ params }: PageProps) => {
 
   const product: ProductEntity = await useCase.execute(id);
 
-  return <ProductDetail product={product} />;
+  return <ProductDetail product={product.props} />;
 };
 export default ProductPage;

@@ -2,6 +2,7 @@
 "use client";
 import { AddProductInCartUseCase } from "@/@core/application/cart/add-product-in-cart.use-case";
 import { ClearCartUseCase } from "@/@core/application/cart/clear-product-in-cart.use-case";
+import { GetCartUseCase } from "@/@core/application/cart/get-cart.use-case";
 import { RemoveProductInCartUseCase } from "@/@core/application/cart/remove-product-in-cart.use-case";
 import { CartEntity } from "@/@core/domain/entities/cart.entity";
 import { ProductEntity } from "@/@core/domain/entities/product.entity";
@@ -10,6 +11,7 @@ import {
   createContext,
   PropsWithChildren,
   useCallback,
+  useEffect,
   useState,
 } from "react";
 
@@ -18,6 +20,7 @@ export type CartContextType = {
   addProduct: (product: ProductEntity) => void;
   removeProduct: (product: number) => void;
   clear: () => void;
+  reload: ()=> void;
 };
 
 const defaultContext: CartContextType = {
@@ -25,6 +28,7 @@ const defaultContext: CartContextType = {
   removeProduct: (productId: number) => {},
   clear: () => {},
   cart: new CartEntity({products: []}),
+  reload: () => {}
 };
 
 export const CartContext = createContext(defaultContext);
@@ -32,6 +36,7 @@ export const CartContext = createContext(defaultContext);
 const addProductUseCase = container.get<AddProductInCartUseCase>(Registry.AddProductInCartUseCase);
 const removeProductUseCase = container.get<RemoveProductInCartUseCase>(Registry.RemoveProductInCartUseCase);
 const clearProductUseCase = container.get<ClearCartUseCase>(Registry.ClearCartUseCase);
+const getUseCase = container.get<GetCartUseCase>(Registry.GetCartUseCase);
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
   const [cart, setCart] = useState<CartEntity>(defaultContext.cart);
@@ -51,6 +56,15 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     setCart(cart);
   }, []);
 
+  const reload = useCallback(() => {
+    const cart = getUseCase.execute();
+    setCart(cart);
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload])
+  
   return (
     <CartContext.Provider
       value={{
@@ -58,6 +72,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
         addProduct,
         removeProduct,
         clear,
+        reload
       }}
     >
       {children}

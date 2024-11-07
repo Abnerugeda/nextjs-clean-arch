@@ -4,7 +4,7 @@ import { CartGateway } from "@/@core/domain/gateways/cart.gateway";
 export class GetCartUseCase {
   constructor(private cartGateway: CartGateway) {}
 
-  async execute(): Promise<CartEntity> {
+  execute(): CartEntity {
     return this.cartGateway.get();
   }
 }

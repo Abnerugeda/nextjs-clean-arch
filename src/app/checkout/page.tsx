@@ -17,7 +17,7 @@ const CheckoutPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        products: cartContext.products,
+        products: cartContext.cart.product.map((product) => ({...product.props})),
         credit_card_number,
       }),
     });
@@ -32,9 +32,9 @@ const CheckoutPage = () => {
     <div>
       <h3>Meu carrinho</h3>
       <ul>
-        {cartContext.products.map((products, key) => (
+        {cartContext.cart.product.map((product, key) => (
           <li key={key}>
-            Produto {products.name} - {products.price}
+            Produto {product.name} - {product.price}
           </li>
         ))}
       </ul>

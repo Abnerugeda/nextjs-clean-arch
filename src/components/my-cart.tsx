@@ -7,7 +7,7 @@ export const MyCart = () => {
 
   return (
     <nav>
-      Carrinho - Total {cartContext.total} | Itens {cartContext.products.length}
+      Carrinho - Total {cartContext.cart.total} | Itens {cartContext.cart.product.length}
     </nav>
   );
 };
